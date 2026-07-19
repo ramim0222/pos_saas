@@ -13,7 +13,7 @@ const NAV_LINKS = [
     { label: "Features", href: "/features", page: true },
     { label: "Pricing", href: "/pricing", page: true },
     { label: "About", href: "/about", page: true },
-    { label: "FAQ", href: "/#faq" },
+    { label: "Contact", href: "/contact", page: true },
 ];
 
 export default function Navbar({ canLogin, canRegister }) {

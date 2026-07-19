@@ -8,7 +8,10 @@ const PRODUCT_LINKS = [
     { label: "FAQ", href: "/#faq" },
 ];
 
-const COMPANY_LINKS = [{ label: "About", href: "/about", page: true }];
+const COMPANY_LINKS = [
+    { label: "About", href: "/about", page: true },
+    { label: "Contact", href: "/contact", page: true },
+];
 
 const LEGAL_LINKS = [
     { label: "Privacy policy", href: "/privacy" },
