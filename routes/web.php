@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\PurchaseOrderController as AdminPurchaseOrderController;
+use App\Http\Controllers\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +66,26 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::get('/', [AdminInventoryController::class, 'index'])->name('index');
         Route::post('/adjust', [AdminInventoryController::class, 'adjust'])->name('adjust');
         Route::post('/transfer', [AdminInventoryController::class, 'transfer'])->name('transfer');
+    });
+
+    Route::prefix('purchases')->name('purchases.')->group(function () {
+        Route::get('/', [AdminPurchaseOrderController::class, 'index'])->name('index');
+
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::post('/', [AdminPurchaseOrderController::class, 'store'])->name('store');
+            Route::put('/{purchaseOrder}', [AdminPurchaseOrderController::class, 'update'])->name('update');
+            Route::delete('/{purchaseOrder}', [AdminPurchaseOrderController::class, 'destroy'])->name('destroy');
+            Route::post('/{purchaseOrder}/send', [AdminPurchaseOrderController::class, 'send'])->name('send');
+            Route::post('/{purchaseOrder}/receive', [AdminPurchaseOrderController::class, 'receive'])->name('receive');
+            Route::post('/{purchaseOrder}/cancel', [AdminPurchaseOrderController::class, 'cancel'])->name('cancel');
+        });
+
+        Route::prefix('suppliers')->name('suppliers.')->group(function () {
+            Route::post('/', [AdminSupplierController::class, 'store'])->name('store');
+            Route::put('/{supplier}', [AdminSupplierController::class, 'update'])->name('update');
+            Route::post('/{supplier}/deactivate', [AdminSupplierController::class, 'deactivate'])->name('deactivate');
+            Route::post('/{supplier}/payments', [AdminSupplierController::class, 'storePayment'])->name('payments.store');
+        });
     });
 });
 
