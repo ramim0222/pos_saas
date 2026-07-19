@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import InputLabel from "@/Components/InputLabel";
 import InputError from "@/Components/InputError";
 import AuthCheckbox from "@/Components/Auth/AuthCheckbox";
+import StatusBanner from "@/Components/Auth/StatusBanner";
 import FrontTextInput from "@/Components/Front/FrontTextInput";
 import { FrontButton } from "@/Components/Front/Button";
 import AuthLayout from "@/Layouts/AuthLayout";
@@ -41,11 +42,8 @@ export default function Login({ status, canResetPassword }) {
             </div>
 
             {status && (
-                <div
-                    data-auth-item
-                    className="mt-6 rounded-lg border border-front-green/30 bg-front-green/10 px-4 py-3 text-sm font-medium text-front-green"
-                >
-                    {status}
+                <div data-auth-item className="mt-6">
+                    <StatusBanner message={status} />
                 </div>
             )}
 
