@@ -1,100 +1,138 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm } from "@inertiajs/react";
+import { Loader2 } from "lucide-react";
+
+import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/InputError";
+import AuthCheckbox from "@/Components/Auth/AuthCheckbox";
+import FrontTextInput from "@/Components/Front/FrontTextInput";
+import { FrontButton } from "@/Components/Front/Button";
+import AuthLayout from "@/Layouts/AuthLayout";
 
 export default function Login({ status, canResetPassword }) {
     const { data, setData, post, processing, errors, reset } = useForm({
-        email: '',
-        password: '',
+        email: "",
+        password: "",
         remember: false,
     });
 
     const submit = (e) => {
         e.preventDefault();
 
-        post(route('login'), {
-            onFinish: () => reset('password'),
+        post(route("login"), {
+            onFinish: () => reset("password"),
         });
     };
 
     return (
-        <GuestLayout>
+        <AuthLayout
+            panelEyebrow="Dokan"
+            panelTitle="Everything your shop needs, still open."
+            panelIntro="Sign back in to pick up where you left off — sales, stock, and staff, all in one place."
+        >
             <Head title="Log in" />
 
+            <div data-auth-item>
+                <h1 className="font-display text-3xl font-semibold tracking-tight text-front-ink">
+                    Welcome back.
+                </h1>
+                <p className="mt-2 text-sm text-front-muted">
+                    Sign in to your Dokan account.
+                </p>
+            </div>
+
             {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
+                <div
+                    data-auth-item
+                    className="mt-6 rounded-lg border border-front-green/30 bg-front-green/10 px-4 py-3 text-sm font-medium text-front-green"
+                >
                     {status}
                 </div>
             )}
 
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
+            <form onSubmit={submit} noValidate className="mt-8 space-y-6">
+                <div data-auth-item>
+                    <InputLabel
+                        htmlFor="email"
+                        value="Email"
+                        className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase"
+                    />
+                    <FrontTextInput
                         id="email"
                         type="email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
+                        className="mt-2"
                         autoComplete="username"
                         isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
+                    <InputError message={errors.email} className="mt-2 !text-red-400" />
                 </div>
 
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
+                <div data-auth-item>
+                    <InputLabel
+                        htmlFor="password"
+                        value="Password"
+                        className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase"
+                    />
+                    <FrontTextInput
                         id="password"
                         type="password"
                         name="password"
                         value={data.password}
-                        className="mt-1 block w-full"
+                        className="mt-2"
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                     />
-
-                    <InputError message={errors.password} className="mt-2" />
+                    <InputError message={errors.password} className="mt-2 !text-red-400" />
                 </div>
 
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
+                <div data-auth-item className="flex items-center justify-between">
+                    <label className="flex items-center gap-2">
+                        <AuthCheckbox
                             name="remember"
                             checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
+                            onChange={(e) => setData("remember", e.target.checked)}
                         />
-                        <span className="ms-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
+                        <span className="text-sm text-front-muted">Remember me</span>
                     </label>
-                </div>
 
-                <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            href={route("password.request")}
+                            className="text-sm font-medium text-front-accent hover:underline"
                         >
-                            Forgot your password?
+                            Forgot password?
                         </Link>
                     )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
                 </div>
+
+                <FrontButton
+                    type="submit"
+                    disabled={processing}
+                    data-auth-item
+                    className="w-full"
+                >
+                    {processing ? (
+                        <>
+                            <Loader2 size={15} className="animate-spin" />
+                            Signing in
+                        </>
+                    ) : (
+                        "Log in"
+                    )}
+                </FrontButton>
             </form>
-        </GuestLayout>
+
+            <p data-auth-item className="mt-8 text-sm text-front-muted">
+                New here?{" "}
+                <Link
+                    href={route("register")}
+                    className="font-medium text-front-accent hover:underline"
+                >
+                    Create your store
+                </Link>
+            </p>
+        </AuthLayout>
     );
 }
