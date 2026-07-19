@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -34,7 +34,12 @@ const FAQS = [
     },
 ];
 
-export default function FAQ() {
+export default function FAQ({
+    id = "faq",
+    eyebrow = "Questions",
+    title = "Before you switch over",
+    items = FAQS,
+}) {
     const rootRef = useRef(null);
 
     useGSAP(
@@ -52,19 +57,19 @@ export default function FAQ() {
     );
 
     return (
-        <section id="faq" ref={rootRef} className="bg-front-bg py-24 lg:py-32">
+        <section id={id} ref={rootRef} className="bg-front-bg py-24 lg:py-32">
             <div className="mx-auto max-w-3xl px-6 lg:px-10">
                 <div className="mb-14">
                     <p className="mb-4 text-xs font-medium tracking-[0.2em] text-front-accent uppercase">
-                        Questions
+                        {eyebrow}
                     </p>
                     <h2 className="font-display text-4xl font-semibold tracking-tight text-front-ink lg:text-5xl">
-                        Before you switch over
+                        {title}
                     </h2>
                 </div>
 
                 <div className="border-t border-front-line">
-                    {FAQS.map((item) => (
+                    {items.map((item) => (
                         <div key={item.q} data-faq-item>
                             <FAQItem question={item.q} answer={item.a} />
                         </div>

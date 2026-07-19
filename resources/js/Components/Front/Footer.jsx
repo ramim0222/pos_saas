@@ -3,7 +3,7 @@ import { Mail, MessageCircle, Phone } from "lucide-react";
 
 const PRODUCT_LINKS = [
     { label: "Features", href: "/features", page: true },
-    { label: "Pricing", href: "/#pricing" },
+    { label: "Pricing", href: "/pricing", page: true },
     { label: "How it works", href: "/#how-it-works" },
     { label: "FAQ", href: "/#faq" },
 ];
