@@ -8,6 +8,8 @@ const PRODUCT_LINKS = [
     { label: "FAQ", href: "/#faq" },
 ];
 
+const COMPANY_LINKS = [{ label: "About", href: "/about", page: true }];
+
 const LEGAL_LINKS = [
     { label: "Privacy policy", href: "/privacy" },
     { label: "Terms of service", href: "/terms" },
@@ -17,7 +19,7 @@ export default function Footer() {
     return (
         <footer className="border-t border-front-line bg-front-bg">
             <div className="mx-auto max-w-[1400px] px-6 py-16 lg:px-10">
-                <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr]">
+                <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr_1fr_1fr]">
                     <div>
                         <Link
                             href="/"
@@ -63,6 +65,33 @@ export default function Footer() {
                         </p>
                         <ul className="space-y-3">
                             {PRODUCT_LINKS.map((link) => (
+                                <li key={link.href}>
+                                    {link.page ? (
+                                        <Link
+                                            href={link.href}
+                                            className="text-sm text-front-muted transition-colors hover:text-front-ink"
+                                        >
+                                            {link.label}
+                                        </Link>
+                                    ) : (
+                                        <a
+                                            href={link.href}
+                                            className="text-sm text-front-muted transition-colors hover:text-front-ink"
+                                        >
+                                            {link.label}
+                                        </a>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <p className="mb-4 text-xs font-medium tracking-wide text-front-ink/70 uppercase">
+                            Company
+                        </p>
+                        <ul className="space-y-3">
+                            {COMPANY_LINKS.map((link) => (
                                 <li key={link.href}>
                                     {link.page ? (
                                         <Link

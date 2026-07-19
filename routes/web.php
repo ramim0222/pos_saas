@@ -25,6 +25,13 @@ Route::get('/pricing', function () {
     ]);
 })->name('pricing');
 
+Route::get('/about', function () {
+    return Inertia::render('Front/About', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+    ]);
+})->name('about');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
