@@ -14,43 +14,77 @@ function formatValue(value, format) {
 }
 
 export default function StatCard({ label, value, change, changeLabel, format = "number", tone }) {
+    const hasTrend = changeLabel != null && changeLabel !== "";
     const cardRef = useRef(null);
     const numRef = useRef(null);
+    const firstRunDone = useRef(false);
 
-    useGSAP(() => {
-        const el = numRef.current;
-        if (!el) return;
-        const counter = { value: 0 };
-        let fallback;
+    // Handles both the initial scroll-gated count-up from zero AND any later
+    // change to `value` (e.g. switching the branch filter) — without this,
+    // the displayed number would freeze at whatever it showed on first mount.
+    useGSAP(
+        () => {
+            const el = numRef.current;
+            if (!el) return;
 
-        const trigger = ScrollTrigger.create({
-            trigger: cardRef.current,
-            start: "top 90%",
-            once: true,
-            onEnter: () => {
-                gsap.to(counter, {
-                    value,
-                    duration: 1.1,
-                    ease: "power2.out",
-                    onUpdate: () => {
-                        el.textContent = formatValue(counter.value, format);
-                    },
-                    onComplete: () => {
-                        el.textContent = formatValue(value, format);
+            if (!firstRunDone.current) {
+                firstRunDone.current = true;
+                const counter = { value: 0 };
+                let fallback;
+
+                const trigger = ScrollTrigger.create({
+                    trigger: cardRef.current,
+                    start: "top 90%",
+                    once: true,
+                    onEnter: () => {
+                        gsap.to(counter, {
+                            value,
+                            duration: 1.1,
+                            ease: "power2.out",
+                            onUpdate: () => {
+                                el.textContent = formatValue(counter.value, format);
+                            },
+                            onComplete: () => {
+                                el.textContent = formatValue(value, format);
+                            },
+                        });
+
+                        fallback = window.setTimeout(() => {
+                            el.textContent = formatValue(value, format);
+                        }, 2000);
                     },
                 });
 
-                fallback = window.setTimeout(() => {
-                    el.textContent = formatValue(value, format);
-                }, 2000);
-            },
-        });
+                return () => {
+                    trigger.kill();
+                    window.clearTimeout(fallback);
+                };
+            }
 
-        return () => {
-            trigger.kill();
-            window.clearTimeout(fallback);
-        };
-    }, []);
+            const current = parseFloat(String(el.textContent).replace(/[^0-9.-]/g, "")) || 0;
+            const counter = { value: current };
+            const tween = gsap.to(counter, {
+                value,
+                duration: 0.6,
+                ease: "power2.out",
+                onUpdate: () => {
+                    el.textContent = formatValue(counter.value, format);
+                },
+                onComplete: () => {
+                    el.textContent = formatValue(value, format);
+                },
+            });
+            const fallback = window.setTimeout(() => {
+                el.textContent = formatValue(value, format);
+            }, 1500);
+
+            return () => {
+                tween.kill();
+                window.clearTimeout(fallback);
+            };
+        },
+        { dependencies: [value] },
+    );
 
     const isPositive = change >= 0;
     const badNews = tone === "warning" ? isPositive : !isPositive;
@@ -66,18 +100,20 @@ export default function StatCard({ label, value, change, changeLabel, format = "
             <p className="mt-3 font-display text-3xl font-semibold tabular-figures text-front-ink">
                 <span ref={numRef}>{formatValue(0, format)}</span>
             </p>
-            <div className="mt-3 flex items-center gap-1.5 text-xs">
-                <span
-                    className={`flex items-center gap-1 font-medium ${
-                        badNews ? "text-red-400" : "text-front-green"
-                    }`}
-                >
-                    <TrendIcon size={13} />
-                    {Math.abs(change)}
-                    {format === "currency" ? "%" : ""}
-                </span>
-                <span className="text-front-muted">{changeLabel}</span>
-            </div>
+            {hasTrend && (
+                <div className="mt-3 flex items-center gap-1.5 text-xs">
+                    <span
+                        className={`flex items-center gap-1 font-medium ${
+                            badNews ? "text-red-400" : "text-front-green"
+                        }`}
+                    >
+                        <TrendIcon size={13} />
+                        {Math.abs(change)}
+                        {format === "currency" ? "%" : ""}
+                    </span>
+                    <span className="text-front-muted">{changeLabel}</span>
+                </div>
+            )}
         </div>
     );
 }

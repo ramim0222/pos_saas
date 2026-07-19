@@ -3,7 +3,11 @@ import { Bell, ChevronDown, LogOut, Menu, User } from "lucide-react";
 
 import Dropdown from "@/Components/Dropdown";
 
-export default function Topbar({ setMobileOpen }) {
+export default function Topbar({
+    setMobileOpen,
+    title = "Overview",
+    subtitle,
+}) {
     const user = usePage().props.auth?.user;
     const name = user?.name ?? "Admin";
     const initials = name
@@ -26,11 +30,11 @@ export default function Topbar({ setMobileOpen }) {
                 </button>
                 <div>
                     <p className="font-display text-base font-medium text-front-ink">
-                        Platform overview
+                        {title}
                     </p>
-                    <p className="hidden text-xs text-front-muted sm:block">
-                        Every store on Dokan, in one place
-                    </p>
+                    {subtitle && (
+                        <p className="hidden text-xs text-front-muted sm:block">{subtitle}</p>
+                    )}
                 </div>
             </div>
 

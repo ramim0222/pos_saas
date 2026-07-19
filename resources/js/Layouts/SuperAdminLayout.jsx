@@ -1,16 +1,14 @@
 import { useState } from "react";
-import { Head, usePage } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import {
     LayoutDashboard,
-    Package,
-    Boxes,
-    ClipboardList,
-    Receipt,
-    Users,
-    BarChart3,
+    Store,
+    CreditCard,
     Wallet,
-    UserCog,
-    Building2,
+    Layers,
+    LifeBuoy,
+    BarChart3,
+    Users,
     Settings,
 } from "lucide-react";
 
@@ -19,27 +17,24 @@ import Topbar from "@/Components/Admin/Topbar";
 
 const NAV_ITEMS = [
     { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-    { label: "Products", href: "/admin/products", icon: Package },
-    { label: "Inventory", href: "/admin/inventory", icon: Boxes },
-    { label: "Purchases", href: "/admin/purchases", icon: ClipboardList },
-    { label: "Sales", href: "/admin/sales", icon: Receipt },
-    { label: "Customers", href: "/admin/customers", icon: Users },
-    { label: "Reports", href: "/admin/reports", icon: BarChart3 },
+    { label: "Tenants", href: "/admin/tenants", icon: Store },
+    { label: "Subscriptions", href: "/admin/subscriptions", icon: CreditCard },
     { label: "Billing", href: "/admin/billing", icon: Wallet },
-    { label: "Staff", href: "/admin/staff", icon: UserCog },
-    { label: "Branches", href: "/admin/branches", icon: Building2 },
+    { label: "Plans", href: "/admin/plans", icon: Layers },
+    { label: "Support", href: "/admin/support", icon: LifeBuoy },
+    { label: "Reports", href: "/admin/reports", icon: BarChart3 },
+    { label: "Team", href: "/admin/team", icon: Users },
     { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminLayout({
+export default function SuperAdminLayout({
     title,
-    topbarTitle,
-    topbarSubtitle,
+    topbarTitle = "Platform overview",
+    topbarSubtitle = "Every store on Dokan, in one place",
     children,
 }) {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
-    const storeName = usePage().props.auth?.user?.store_name;
 
     return (
         <div className="flex min-h-screen bg-front-bg font-sans">
@@ -47,7 +42,7 @@ export default function AdminLayout({
 
             <Sidebar
                 navItems={NAV_ITEMS}
-                brandLabel={storeName || "Dokan"}
+                brandLabel="Dokan Admin"
                 homeHref="/admin/dashboard"
                 collapsed={collapsed}
                 setCollapsed={setCollapsed}
@@ -56,11 +51,7 @@ export default function AdminLayout({
             />
 
             <div className="flex min-w-0 flex-1 flex-col">
-                <Topbar
-                    setMobileOpen={setMobileOpen}
-                    title={topbarTitle ?? title ?? "Overview"}
-                    subtitle={topbarSubtitle}
-                />
+                <Topbar setMobileOpen={setMobileOpen} title={topbarTitle} subtitle={topbarSubtitle} />
                 <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
             </div>
         </div>

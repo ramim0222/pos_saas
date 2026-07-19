@@ -1,35 +1,20 @@
 import { useRef } from "react";
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import {
-    LayoutDashboard,
-    Store,
-    CreditCard,
-    Wallet,
-    Layers,
-    LifeBuoy,
-    BarChart3,
-    Users,
-    Settings,
-    ChevronsLeft,
-    X,
-} from "lucide-react";
+import { ChevronsLeft, X } from "lucide-react";
 
-const NAV_ITEMS = [
-    { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, current: true },
-    { label: "Tenants", href: "/admin/tenants", icon: Store },
-    { label: "Subscriptions", href: "/admin/subscriptions", icon: CreditCard },
-    { label: "Billing", href: "/admin/billing", icon: Wallet },
-    { label: "Plans", href: "/admin/plans", icon: Layers },
-    { label: "Support", href: "/admin/support", icon: LifeBuoy },
-    { label: "Reports", href: "/admin/reports", icon: BarChart3 },
-    { label: "Team", href: "/admin/team", icon: Users },
-    { label: "Settings", href: "/admin/settings", icon: Settings },
-];
-
-export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen }) {
+export default function Sidebar({
+    navItems,
+    brandLabel = "Dokan",
+    homeHref = "/admin/dashboard",
+    collapsed,
+    setCollapsed,
+    mobileOpen,
+    setMobileOpen,
+}) {
     const asideRef = useRef(null);
+    const { url } = usePage();
 
     useGSAP(
         () => {
@@ -80,6 +65,8 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         { scope: asideRef, dependencies: [mobileOpen] },
     );
 
+    const isCurrent = (href) => url === href || url.startsWith(`${href}/`);
+
     return (
         <>
             {mobileOpen && (
@@ -97,7 +84,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             >
                 <div className="flex h-full w-[248px] flex-col">
                     <div className="flex h-16 shrink-0 items-center justify-between px-4">
-                        <Link href="/admin/dashboard" className="flex items-center gap-2 overflow-hidden">
+                        <Link href={homeHref} className="flex items-center gap-2 overflow-hidden">
                             <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-front-accent text-sm font-bold text-front-accent-ink">
                                 D
                             </span>
@@ -105,7 +92,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                                 data-nav-label
                                 className="font-display text-lg font-semibold whitespace-nowrap text-front-ink"
                             >
-                                Dokan Admin
+                                {brandLabel}
                             </span>
                         </Link>
                         <button
@@ -119,22 +106,25 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                     </div>
 
                     <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-4">
-                        {NAV_ITEMS.map((item) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
-                                    item.current
-                                        ? "bg-front-accent/10 font-medium text-front-accent"
-                                        : "text-front-muted hover:bg-front-bg hover:text-front-ink"
-                                }`}
-                            >
-                                <item.icon size={17} className="shrink-0" />
-                                <span data-nav-label className="whitespace-nowrap">
-                                    {item.label}
-                                </span>
-                            </Link>
-                        ))}
+                        {navItems.map((item) => {
+                            const active = isCurrent(item.href);
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors ${
+                                        active
+                                            ? "bg-front-accent/10 font-medium text-front-accent"
+                                            : "text-front-muted hover:bg-front-bg hover:text-front-ink"
+                                    }`}
+                                >
+                                    <item.icon size={17} className="shrink-0" />
+                                    <span data-nav-label className="whitespace-nowrap">
+                                        {item.label}
+                                    </span>
+                                </Link>
+                            );
+                        })}
                     </nav>
 
                     <div className="shrink-0 border-t border-front-line p-3">

@@ -3,7 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
-import AdminLayout from "@/Layouts/AdminLayout";
+import SuperAdminLayout from "@/Layouts/SuperAdminLayout";
 import StatCard from "@/Components/Admin/StatCard";
 import RevenueChart from "@/Components/Admin/RevenueChart";
 import TopStoresTable from "@/Components/Admin/TopStoresTable";
@@ -41,7 +41,7 @@ export default function Dashboard({
     );
 
     return (
-        <AdminLayout title="Dashboard">
+        <SuperAdminLayout title="Dashboard">
             <div ref={rootRef} className="space-y-6">
                 <div
                     data-dash-section
@@ -69,6 +69,6 @@ export default function Dashboard({
                     </div>
                 </div>
             </div>
-        </AdminLayout>
+        </SuperAdminLayout>
     );
 }
