@@ -5,37 +5,37 @@ import gsap from "gsap";
 import { Loader2, X } from "lucide-react";
 
 import InputLabel from "@/Components/InputLabel";
+import FrontSelect from "@/Components/Front/FrontSelect";
 import FrontTextarea from "@/Components/Front/FrontTextarea";
 import { FrontButton } from "@/Components/Front/Button";
 
-const EMPTY = { name: "", contact_person: "", phone: "", email: "", address: "", payment_terms: "", notes: "" };
+const EMPTY = { name: "", phone: "", email: "", address: "", customer_group_id: "", notes: "" };
 
-export default function SupplierFormPanel({ open, onClose, supplier }) {
+export default function CustomerFormPanel({ open, onClose, customer, groups }) {
     const rootRef = useRef(null);
     const panelRef = useRef(null);
     const [form, setForm] = useState(EMPTY);
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
 
-    const isEdit = Boolean(supplier);
+    const isEdit = Boolean(customer);
 
     useEffect(() => {
         if (!open) return;
         setForm(
-            supplier
+            customer
                 ? {
-                      name: supplier.name ?? "",
-                      contact_person: supplier.contact_person ?? "",
-                      phone: supplier.phone ?? "",
-                      email: supplier.email ?? "",
-                      address: supplier.address ?? "",
-                      payment_terms: supplier.payment_terms ?? "",
-                      notes: supplier.notes ?? "",
+                      name: customer.name ?? "",
+                      phone: customer.phone ?? "",
+                      email: customer.email ?? "",
+                      address: customer.address ?? "",
+                      customer_group_id: customer.group?.id ? String(customer.group.id) : "",
+                      notes: customer.notes ?? "",
                   }
                 : EMPTY,
         );
         setErrors({});
-    }, [open, supplier]);
+    }, [open, customer]);
 
     useGSAP(
         () => {
@@ -55,6 +55,7 @@ export default function SupplierFormPanel({ open, onClose, supplier }) {
         setErrors({});
         setProcessing(true);
 
+        const payload = { ...form, customer_group_id: form.customer_group_id || null };
         const options = {
             preserveScroll: true,
             onFinish: () => setProcessing(false),
@@ -63,9 +64,9 @@ export default function SupplierFormPanel({ open, onClose, supplier }) {
         };
 
         if (isEdit) {
-            router.put(route("admin.purchases.suppliers.update", supplier.id), form, options);
+            router.put(route("admin.customers.update", customer.id), payload, options);
         } else {
-            router.post(route("admin.purchases.suppliers.store"), form, options);
+            router.post(route("admin.customers.store"), payload, options);
         }
     };
 
@@ -78,7 +79,7 @@ export default function SupplierFormPanel({ open, onClose, supplier }) {
             <div ref={panelRef} className="relative ml-auto flex h-full w-full max-w-md flex-col bg-front-bg shadow-2xl">
                 <div className="flex shrink-0 items-center justify-between border-b border-front-line px-6 py-5">
                     <h2 className="font-display text-xl font-medium text-front-ink">
-                        {isEdit ? "Edit supplier" : "Add supplier"}
+                        {isEdit ? "Edit customer" : "Add customer"}
                     </h2>
                     <button
                         type="button"
@@ -90,28 +91,23 @@ export default function SupplierFormPanel({ open, onClose, supplier }) {
                     </button>
                 </div>
 
-                <form id="supplier-form" onSubmit={submit} noValidate className="flex-1 space-y-5 overflow-y-auto px-6 py-6">
+                <form id="customer-form" onSubmit={submit} noValidate className="flex-1 space-y-5 overflow-y-auto px-6 py-6">
                     <div>
-                        <InputLabel value="Supplier name" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
+                        <InputLabel value="Customer name" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
                         <input value={form.name} onChange={(e) => update({ name: e.target.value })} className={fieldClass} required />
                         {errors.name && <p className="mt-2 text-sm text-red-400">{errors.name}</p>}
                     </div>
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
-                            <InputLabel value="Contact person" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
-                            <input value={form.contact_person} onChange={(e) => update({ contact_person: e.target.value })} className={fieldClass} />
-                        </div>
-                        <div>
                             <InputLabel value="Phone" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
                             <input value={form.phone} onChange={(e) => update({ phone: e.target.value })} className={fieldClass} />
                         </div>
-                    </div>
-
-                    <div>
-                        <InputLabel value="Email" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
-                        <input type="email" value={form.email} onChange={(e) => update({ email: e.target.value })} className={fieldClass} />
-                        {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
+                        <div>
+                            <InputLabel value="Email" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
+                            <input type="email" value={form.email} onChange={(e) => update({ email: e.target.value })} className={fieldClass} />
+                            {errors.email && <p className="mt-2 text-sm text-red-400">{errors.email}</p>}
+                        </div>
                     </div>
 
                     <div>
@@ -120,13 +116,15 @@ export default function SupplierFormPanel({ open, onClose, supplier }) {
                     </div>
 
                     <div>
-                        <InputLabel value="Payment terms" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
-                        <input
-                            value={form.payment_terms}
-                            onChange={(e) => update({ payment_terms: e.target.value })}
-                            placeholder="e.g. Net 30"
-                            className={fieldClass}
-                        />
+                        <InputLabel value="Customer group" className="!text-xs !font-medium !tracking-wide !text-front-muted uppercase" />
+                        <FrontSelect value={form.customer_group_id} onChange={(e) => update({ customer_group_id: e.target.value })} className="mt-2">
+                            <option value="">No group</option>
+                            {groups.map((g) => (
+                                <option key={g.id} value={g.id}>
+                                    {g.name} ({g.discount_percent}% off)
+                                </option>
+                            ))}
+                        </FrontSelect>
                     </div>
 
                     <div>
@@ -143,14 +141,14 @@ export default function SupplierFormPanel({ open, onClose, supplier }) {
                     >
                         Cancel
                     </button>
-                    <FrontButton type="submit" form="supplier-form" disabled={processing || !form.name}>
+                    <FrontButton type="submit" form="customer-form" disabled={processing || !form.name}>
                         {processing ? (
                             <>
                                 <Loader2 size={15} className="animate-spin" />
                                 Saving
                             </>
                         ) : (
-                            "Save supplier"
+                            "Save customer"
                         )}
                     </FrontButton>
                 </div>

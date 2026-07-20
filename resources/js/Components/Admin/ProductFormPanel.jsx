@@ -104,33 +104,22 @@ export default function ProductFormPanel({ open, product, categories, onClose })
 
     useGSAP(
         () => {
-            if (open) {
-                gsap.set(rootRef.current, { display: "flex" });
-                gsap.fromTo(
-                    "[data-backdrop]",
-                    { opacity: 0 },
-                    { opacity: 1, duration: 0.3, ease: "power1.out" },
-                );
-                gsap.fromTo(
-                    panelRef.current,
-                    { xPercent: 100 },
-                    { xPercent: 0, duration: 0.4, ease: "power3.out" },
-                );
-            } else if (rootRef.current) {
-                gsap.to(panelRef.current, {
-                    xPercent: 100,
-                    duration: 0.32,
-                    ease: "power2.in",
-                });
-                gsap.to("[data-backdrop]", {
-                    opacity: 0,
-                    duration: 0.25,
-                    onComplete: () => gsap.set(rootRef.current, { display: "none" }),
-                });
-            }
+            if (!open) return;
+            gsap.fromTo(
+                "[data-backdrop]",
+                { opacity: 0 },
+                { opacity: 1, duration: 0.3, ease: "power1.out" },
+            );
+            gsap.fromTo(
+                panelRef.current,
+                { xPercent: 100 },
+                { xPercent: 0, duration: 0.4, ease: "power3.out" },
+            );
         },
         { scope: rootRef, dependencies: [open] },
     );
+
+    if (!open) return null;
 
     const setField = (key, value) => setFields((f) => ({ ...f, [key]: value }));
 
@@ -177,7 +166,7 @@ export default function ProductFormPanel({ open, product, categories, onClose })
     };
 
     return (
-        <div ref={rootRef} className="fixed inset-0 z-50 hidden">
+        <div ref={rootRef} className="fixed inset-0 z-50 flex">
             <div
                 data-backdrop
                 className="absolute inset-0 bg-black/60"

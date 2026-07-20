@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
+use App\Http\Controllers\Admin\CustomerGroupController as AdminCustomerGroupController;
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController as AdminPurchaseOrderController;
@@ -94,6 +96,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::get('/export', [AdminSalesController::class, 'export'])->name('export');
         Route::post('/{sale}/refund', [AdminSalesController::class, 'refund'])->name('refund');
         Route::post('/{sale}/void', [AdminSalesController::class, 'void'])->name('void');
+    });
+
+    Route::prefix('customers')->name('customers.')->group(function () {
+        Route::get('/', [AdminCustomerController::class, 'index'])->name('index');
+        Route::post('/', [AdminCustomerController::class, 'store'])->name('store');
+        Route::put('/{customer}', [AdminCustomerController::class, 'update'])->name('update');
+        Route::post('/{customer}/points', [AdminCustomerController::class, 'adjustPoints'])->name('points');
+
+        Route::prefix('groups')->name('groups.')->group(function () {
+            Route::post('/', [AdminCustomerGroupController::class, 'store'])->name('store');
+            Route::put('/{group}', [AdminCustomerGroupController::class, 'update'])->name('update');
+        });
     });
 });
 

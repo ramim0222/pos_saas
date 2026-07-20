@@ -65,18 +65,9 @@ export default function StockAdjustmentModal({
 
     useGSAP(
         () => {
-            if (open) {
-                gsap.set(rootRef.current, { display: "flex" });
-                gsap.fromTo("[data-backdrop]", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" });
-                gsap.fromTo(panelRef.current, { xPercent: 100 }, { xPercent: 0, duration: 0.4, ease: "power3.out" });
-            } else if (rootRef.current) {
-                gsap.to(panelRef.current, { xPercent: 100, duration: 0.32, ease: "power2.in" });
-                gsap.to("[data-backdrop]", {
-                    opacity: 0,
-                    duration: 0.25,
-                    onComplete: () => gsap.set(rootRef.current, { display: "none" }),
-                });
-            }
+            if (!open) return;
+            gsap.fromTo("[data-backdrop]", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" });
+            gsap.fromTo(panelRef.current, { xPercent: 100 }, { xPercent: 0, duration: 0.4, ease: "power3.out" });
         },
         { scope: rootRef, dependencies: [open] },
     );
@@ -116,6 +107,8 @@ export default function StockAdjustmentModal({
         { scope: rootRef, dependencies: [resultingStock], revertOnUpdate: true },
     );
 
+    if (!open) return null;
+
     const submit = (e) => {
         e.preventDefault();
         setErrors({});
@@ -142,7 +135,7 @@ export default function StockAdjustmentModal({
     };
 
     return (
-        <div ref={rootRef} className="fixed inset-0 z-50 hidden">
+        <div ref={rootRef} className="fixed inset-0 z-50 flex">
             <div data-backdrop className="absolute inset-0 bg-black/60" onClick={onClose} aria-hidden="true" />
             <div ref={panelRef} className="relative ml-auto flex h-full w-full max-w-md flex-col bg-front-bg shadow-2xl">
                 <div className="flex shrink-0 items-center justify-between border-b border-front-line px-6 py-5">
