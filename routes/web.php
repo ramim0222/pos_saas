@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController as AdminPurchaseOrderController;
 use App\Http\Controllers\Admin\ReportsController as AdminReportsController;
 use App\Http\Controllers\Admin\SalesController as AdminSalesController;
+use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
@@ -123,6 +124,17 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::post('/change-plan', [AdminBillingController::class, 'changePlan'])->name('change-plan');
         Route::post('/manual-payment', [AdminBillingController::class, 'submitManualPayment'])->name('manual-payment');
         Route::post('/reminders', [AdminBillingController::class, 'updateReminders'])->name('reminders');
+    });
+
+    Route::prefix('staff')->name('staff.')->group(function () {
+        Route::get('/', [AdminStaffController::class, 'index'])->name('index');
+        Route::post('/', [AdminStaffController::class, 'invite'])->name('invite');
+        Route::put('/{staff}/role', [AdminStaffController::class, 'updateRole'])->name('role');
+        Route::put('/{staff}/branches', [AdminStaffController::class, 'reassignBranches'])->name('branches');
+        Route::post('/{staff}/suspend', [AdminStaffController::class, 'suspend'])->name('suspend');
+        Route::post('/{staff}/reactivate', [AdminStaffController::class, 'reactivate'])->name('reactivate');
+        Route::post('/{staff}/accept', [AdminStaffController::class, 'simulateAccept'])->name('accept');
+        Route::delete('/{staff}', [AdminStaffController::class, 'remove'])->name('remove');
     });
 });
 

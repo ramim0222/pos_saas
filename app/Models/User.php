@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -23,7 +25,21 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
+        'role',
+        'staff_status',
+        'invited_at',
+        'last_login_at',
     ];
+
+    public function branches(): BelongsToMany
+    {
+        return $this->belongsToMany(Branch::class, 'staff_branches');
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -45,6 +61,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'invited_at' => 'datetime',
+            'last_login_at' => 'datetime',
         ];
     }
 }

@@ -18,6 +18,8 @@ const STATUS_META = {
     pending: { label: "Pending", className: "bg-front-accent/15 text-front-accent" },
     approved: { label: "Approved", className: "bg-front-green/15 text-front-green" },
     rejected: { label: "Rejected", className: "bg-red-400/15 text-red-400" },
+    pending: { label: "Invited — Pending", className: "bg-front-accent/15 text-front-accent" },
+    suspended: { label: "Suspended", className: "bg-red-400/10 text-red-400" },
 };
 
 export default function StatusBadge({ status }) {
