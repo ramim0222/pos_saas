@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController as AdminPurchaseOrderController;
+use App\Http\Controllers\Admin\SalesController as AdminSalesController;
 use App\Http\Controllers\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ProfileController;
@@ -86,6 +87,13 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('/{supplier}/deactivate', [AdminSupplierController::class, 'deactivate'])->name('deactivate');
             Route::post('/{supplier}/payments', [AdminSupplierController::class, 'storePayment'])->name('payments.store');
         });
+    });
+
+    Route::prefix('sales')->name('sales.')->group(function () {
+        Route::get('/', [AdminSalesController::class, 'index'])->name('index');
+        Route::get('/export', [AdminSalesController::class, 'export'])->name('export');
+        Route::post('/{sale}/refund', [AdminSalesController::class, 'refund'])->name('refund');
+        Route::post('/{sale}/void', [AdminSalesController::class, 'void'])->name('void');
     });
 });
 

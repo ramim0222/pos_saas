@@ -10,6 +10,9 @@ const STATUS_META = {
     cancelled: { label: "Cancelled", className: "bg-red-400/15 text-red-400" },
     active: { label: "Active", className: "bg-front-green/10 text-front-green" },
     inactive: { label: "Inactive", className: "bg-front-line text-front-muted" },
+    completed: { label: "Completed", className: "bg-front-green/15 text-front-green" },
+    refunded: { label: "Refunded", className: "bg-red-400/15 text-red-400" },
+    voided: { label: "Voided", className: "bg-front-line text-front-muted" },
 };
 
 export default function StatusBadge({ status }) {
