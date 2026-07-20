@@ -30,5 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CustomerGroupSeeder::class);
         $this->call(BillingSeeder::class);
         $this->call(StaffSeeder::class);
+        $this->call(StoreSettingSeeder::class);
+        $this->call(BranchSeeder::class);
     }
 }

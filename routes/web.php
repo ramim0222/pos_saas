@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController as AdminPurchaseOrderController;
 use App\Http\Controllers\Admin\ReportsController as AdminReportsController;
 use App\Http\Controllers\Admin\SalesController as AdminSalesController;
+use App\Http\Controllers\Admin\BranchController as AdminBranchController;
+use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
 use App\Http\Controllers\Admin\StaffController as AdminStaffController;
 use App\Http\Controllers\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\ContactController;
@@ -135,6 +137,26 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::post('/{staff}/reactivate', [AdminStaffController::class, 'reactivate'])->name('reactivate');
         Route::post('/{staff}/accept', [AdminStaffController::class, 'simulateAccept'])->name('accept');
         Route::delete('/{staff}', [AdminStaffController::class, 'remove'])->name('remove');
+    });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/', [AdminSettingsController::class, 'index'])->name('index');
+        Route::post('/profile', [AdminSettingsController::class, 'updateProfile'])->name('profile');
+        Route::post('/receipt', [AdminSettingsController::class, 'updateReceipt'])->name('receipt');
+        Route::post('/tax', [AdminSettingsController::class, 'updateTax'])->name('tax');
+        Route::post('/localization', [AdminSettingsController::class, 'updateLocalization'])->name('localization');
+        Route::post('/notifications', [AdminSettingsController::class, 'updateNotifications'])->name('notifications');
+        Route::get('/export', [AdminSettingsController::class, 'exportData'])->name('export');
+    });
+
+    Route::prefix('branches')->name('branches.')->group(function () {
+        Route::get('/', [AdminBranchController::class, 'index'])->name('index');
+        Route::post('/', [AdminBranchController::class, 'store'])->name('store');
+        Route::put('/{branch}', [AdminBranchController::class, 'update'])->name('update');
+        Route::post('/{branch}/deactivate', [AdminBranchController::class, 'deactivate'])->name('deactivate');
+        Route::post('/{branch}/reactivate', [AdminBranchController::class, 'reactivate'])->name('reactivate');
+        Route::post('/transfers/{transferRequest}/approve', [AdminBranchController::class, 'approveTransfer'])->name('transfers.approve');
+        Route::post('/transfers/{transferRequest}/reject', [AdminBranchController::class, 'rejectTransfer'])->name('transfers.reject');
     });
 });
 
