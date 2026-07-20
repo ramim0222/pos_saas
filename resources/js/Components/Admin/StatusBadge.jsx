@@ -13,6 +13,11 @@ const STATUS_META = {
     completed: { label: "Completed", className: "bg-front-green/15 text-front-green" },
     refunded: { label: "Refunded", className: "bg-red-400/15 text-red-400" },
     voided: { label: "Voided", className: "bg-front-line text-front-muted" },
+    paid: { label: "Paid", className: "bg-front-green/15 text-front-green" },
+    failed: { label: "Failed", className: "bg-red-400/15 text-red-400" },
+    pending: { label: "Pending", className: "bg-front-accent/15 text-front-accent" },
+    approved: { label: "Approved", className: "bg-front-green/15 text-front-green" },
+    rejected: { label: "Rejected", className: "bg-red-400/15 text-red-400" },
 };
 
 export default function StatusBadge({ status }) {

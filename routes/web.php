@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\BillingController as AdminBillingController;
 use App\Http\Controllers\Admin\CustomerController as AdminCustomerController;
 use App\Http\Controllers\Admin\CustomerGroupController as AdminCustomerGroupController;
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
@@ -114,6 +115,14 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::prefix('reports')->name('reports.')->group(function () {
         Route::get('/', [AdminReportsController::class, 'index'])->name('index');
         Route::get('/export', [AdminReportsController::class, 'export'])->name('export');
+    });
+
+    Route::prefix('billing')->name('billing.')->group(function () {
+        Route::get('/', [AdminBillingController::class, 'index'])->name('index');
+        Route::post('/pay-now', [AdminBillingController::class, 'payNow'])->name('pay-now');
+        Route::post('/change-plan', [AdminBillingController::class, 'changePlan'])->name('change-plan');
+        Route::post('/manual-payment', [AdminBillingController::class, 'submitManualPayment'])->name('manual-payment');
+        Route::post('/reminders', [AdminBillingController::class, 'updateReminders'])->name('reminders');
     });
 });
 
