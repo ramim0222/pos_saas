@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\CustomerGroupController as AdminCustomerGroupCont
 use App\Http\Controllers\Admin\InventoryController as AdminInventoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\PurchaseOrderController as AdminPurchaseOrderController;
+use App\Http\Controllers\Admin\ReportsController as AdminReportsController;
 use App\Http\Controllers\Admin\SalesController as AdminSalesController;
 use App\Http\Controllers\Admin\SupplierController as AdminSupplierController;
 use App\Http\Controllers\ContactController;
@@ -108,6 +109,11 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
             Route::post('/', [AdminCustomerGroupController::class, 'store'])->name('store');
             Route::put('/{group}', [AdminCustomerGroupController::class, 'update'])->name('update');
         });
+    });
+
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [AdminReportsController::class, 'index'])->name('index');
+        Route::get('/export', [AdminReportsController::class, 'export'])->name('export');
     });
 });
 
